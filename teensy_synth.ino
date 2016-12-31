@@ -1,3 +1,13 @@
+////////////////////////////////////////////////////////////////////////
+//          Headers
+///////////////////////////////////////////////////////////////////////
+
+#include <Audio.h>
+#include <Wire.h>
+#include <SPI.h>
+#include <SD.h>
+#include <SerialFlash.h>
+
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -33,6 +43,13 @@
 ////////////////////////////////////////////////////////////////////////
 //          Globals
 ///////////////////////////////////////////////////////////////////////
+// GUItool: begin automatically generated code
+AudioSynthWaveformSine   sine1;          //xy=525,341
+AudioOutputI2S           i2s1;           //xy=1015,346
+AudioConnection          patchCord1(sine1, 0, i2s1, 0);
+AudioConnection          patchCord2(sine1, 0, i2s1, 1);
+AudioControlSGTL5000     sgtl5000_1;     //xy=911,616
+// GUItool: end automatically generated code
 
 unsigned long keyStateLow  = 0;
 unsigned long keyStateHigh = 0;
@@ -53,6 +70,9 @@ byte oldKeyTable[NUM_ROWS][NUM_COLUMNS];
 ///////////////////////////////////////////////////////////////////////
 void setup() 
 {
+
+  //default oscillators to off (applitude = 0)
+  sine1.amplitude(0);
 
   #ifdef DEBUG
   Serial.begin(115200);
@@ -113,12 +133,17 @@ void loop()
           Serial.print(" is on\r\n");
           #endif
           //send note to osc?
+          sine1.frequency(mtof(keyMidiValues[rowCnt][colCnt]));
+          sine1.amplitude(0.5);
         }
         else
         {
+          #ifdef DEBUG
           Serial.print(keyMidiValues[rowCnt][colCnt],DEC);
           Serial.print(" is off\r\n");
+          #endif
           //kill note from osc?
+          sine1.amplitude(0);
         }
       }
     }
@@ -255,5 +280,11 @@ bool checkRow(byte rowNum)
       return false;
       break;
   }
+}
+float mtof(byte midiNoteVal)
+{
+  float freq = 0;
+  freq = 440 * pow(2.0,(midiNoteVal-69.0)/12.0);
+  return freq;
 }
 
