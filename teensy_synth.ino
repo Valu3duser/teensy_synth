@@ -55,7 +55,7 @@ void setup()
 {
 
   #ifdef DEBUG
-  Serial.begin(9600);
+  Serial.begin(115200);
   #endif
   
   //init ketable arrays to 0's
@@ -90,7 +90,9 @@ void loop()
 {
   for(byte colCnt = 0; colCnt <8; colCnt++)
   {
+    
     cycleColumns(colCnt);
+    delay(1);
     for(byte rowCnt = 0; rowCnt < 7; rowCnt++)
     {
       if(checkRow(rowCnt))
@@ -107,13 +109,15 @@ void loop()
         if(keyTable[rowCnt][colCnt] == KEY_ON)
         {
           #ifdef DEBUG
-          Serial.print(keyTable[rowCnt][colCnt],DEC);
+          Serial.print(keyMidiValues[rowCnt][colCnt],DEC);
           Serial.print(" is on\r\n");
           #endif
           //send note to osc?
         }
         else
         {
+          Serial.print(keyMidiValues[rowCnt][colCnt],DEC);
+          Serial.print(" is off\r\n");
           //kill note from osc?
         }
       }
