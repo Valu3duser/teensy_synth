@@ -65,6 +65,9 @@ byte keyTable[NUM_ROWS][NUM_COLUMNS];
 byte oldKeyTable[NUM_ROWS][NUM_COLUMNS];
 
 
+int potPin = A0;
+int potValue = 0;
+
 ////////////////////////////////////////////////////////////////////////
 //          setup()
 ///////////////////////////////////////////////////////////////////////
@@ -151,6 +154,8 @@ void loop()
       }
     }
   }
+
+  potValue = readPot(potPin);
   
 }
 void cycleColumns(byte colNum)
@@ -292,5 +297,18 @@ float mtof(byte midiNoteVal)
   Serial.println(freq);
   #endif
   return freq;
+}
+int readPot(int pot)
+{
+  int x; 
+  x = analogRead(pot);
+  #ifdef DEBUG
+  if (x != potValue)
+  {
+    Serial.print("Pot Value: ");
+    Serial.println(x);
+  }
+  #endif
+  return x;
 }
 
