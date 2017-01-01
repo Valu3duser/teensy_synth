@@ -72,7 +72,10 @@ void setup()
 {
 
   //default oscillators to off (applitude = 0)
+  AudioMemory(8);
   sine1.amplitude(0);
+  sgtl5000_1.enable();
+  sgtl5000_1.volume(0.32);
 
   #ifdef DEBUG
   Serial.begin(115200);
@@ -133,8 +136,8 @@ void loop()
           Serial.print(" is on\r\n");
           #endif
           //send note to osc?
-          sine1.frequency(mtof(keyMidiValues[rowCnt][colCnt]));
-          sine1.amplitude(0.5);
+          sine1.frequency(mtof(60 + keyMidiValues[rowCnt][colCnt]));
+          sine1.amplitude(1);
         }
         else
         {
@@ -285,6 +288,9 @@ float mtof(byte midiNoteVal)
 {
   float freq = 0;
   freq = 440 * pow(2.0,(midiNoteVal-69.0)/12.0);
+  #ifdef DEBUG
+  Serial.println(freq);
+  #endif
   return freq;
 }
 
